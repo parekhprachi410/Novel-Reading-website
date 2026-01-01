@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}My Library{% endblock %}
+
+{% block content %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- User Information Header -->
+        <div class="user-header text-center pt-8 pb-4 mb-8 border-b border-gray-200 dark:border-gray-700">
+            <!-- Using Font Awesome icon assumed to be loaded in base.html -->
+            <i class="fas fa-user-circle text-4xl text-[var(--primary-orange)] mb-2"></i>
+            <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">Welcome, {{ current_user.username }}!</h1>
+            <p class="text-gray-500 dark:text-gray-400">Manage your published novels and reading history.</p>
+        </div>
+        
+        <h2 class="text-3xl font-extrabold text-[var(--primary-orange)] pt-10 pb-4 mb-8">
+            Your Library
+        </h2>
+
+        <!-- Section 1: Uploaded Novels (where delete functionality resides) -->
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-10 mb-4 border-l-4 border-[var(--primary-orange)] pl-3">Your Published Novels</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">Manage the novels you have shared with the community. (Clicking Delete immediately removes the novel).</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% if uploaded_books %}
+                {% for book in uploaded_books %}
+                    <div class="bg-white dark:bg-gray-800 p-5 shadow-lg rounded-xl transition duration-300 hover:shadow-xl border border-gray-100 dark:border-gray-700 flex flex-col">
+                        <img src="{{ book.cover_url }}" alt="Cover of {{ book.title }}" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/150x220/34495e/ffffff?text=My+Book'"
+                            class="w-full h-auto object-cover rounded-md mb-4 aspect-[1/1.5] shadow-md">
+                        
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-xl text-gray-900 dark:text-white mb-1">{{ book.title }}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">By: {{ book.author }}</p>
+                            <span class="inline-block bg-[#a8dadc] dark:bg-[#3d5a80] text-gray-900 dark:text-white text-xs px-3 py-1 rounded-full font-semibold">
+                                {{ book.genre }}
+                            </span>
+                        </div>
+
+                        <!-- Delete Functionality Form (CONFIRM REMOVED FOR COMPLIANCE) -->
+                        <form method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" 
+                              class="mt-4">
+                            <button type="submit" class="w-full text-center bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2 px-3 rounded-lg transition duration-200 shadow-md">
+                                <i class="fas fa-trash-alt mr-1"></i> Delete Novel
+                            </button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center text-gray-500 col-span-full p-10 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+                    <p class="text-lg mb-2">You haven't uploaded any novels yet.</p>
+                    <!-- FIX APPLIED HERE: Changed 'upload' to 'upload_book' -->
+                    <p>Ready to share your creation? 
+                        <a href="{{ url_for('upload_book') }}" class="text-[var(--primary-orange)] font-semibold hover:underline">Start sharing now!</a>
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <hr class="my-12 border-t border-gray-300 dark:border-gray-600">
+
+        <!-- Section 2: Reading History -->
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-10 mb-4 border-l-4 border-[var(--primary-orange)] pl-3">Reading History</h3>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">These are the novels you've recently been reading (Mock Data).</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% if history %}
+                {% for book in history %}
+                    <div class="bg-white dark:bg-gray-800 p-5 shadow-inner rounded-xl border border-gray-100 dark:border-gray-700 flex flex-col opacity-80">
+                        <img src="{{ book.cover_url }}" alt="Cover of {{ book.title }}" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/150x220/8d99ae/ffffff?text=History'"
+                            class="w-full h-auto object-cover rounded-md mb-4 aspect-[1/1.5]">
+                        
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-xl text-gray-900 dark:text-white mb-1">{{ book.title }}</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">By: {{ book.author }}</p>
+                            <span class="inline-block bg-[#a8dadc] dark:bg-[#3d5a80] text-gray-900 dark:text-white text-xs px-3 py-1 rounded-full font-semibold">
+                                {{ book.genre }}
+                            </span>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-gray-500 col-span-full p-10 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+                    Your reading history is currently empty.
+                </p>
+            {% endif %}
+        </div>
+        <p class="text-center text-sm text-gray-400 dark:text-gray-500 mt-6 pb-10">Note: Reading History uses static mock data.</p>
+
+    </div>
+{% endblock %}

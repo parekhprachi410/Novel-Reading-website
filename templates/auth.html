@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth - Login or Signup</title>
+    <!-- Load Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-500': '#4f46e5',
+                        'primary-600': '#4338ca',
+                        'danger': '#ef4444',
+                        'success': '#10b981',
+                    }
+                }
+            }
+        }
+        
+        // Function to toggle between login and signup forms
+        function showTab(tabId) {
+            document.getElementById('login-tab').classList.remove('tab-active');
+            document.getElementById('signup-tab').classList.remove('tab-active');
+            document.getElementById(tabId + '-tab').classList.add('tab-active');
+
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.add('hidden');
+            document.getElementById(tabId + '-form').classList.remove('hidden');
+            
+            // Clear JS error on tab switch
+            hideJsError(); 
+        }
+
+        // Helper functions for displaying client-side errors (replaces alert/confirm)
+        function showJsError(message) {
+            const errorBox = document.getElementById('js-error-message');
+            errorBox.textContent = message;
+            errorBox.classList.remove('hidden');
+        }
+
+        function hideJsError() {
+            document.getElementById('js-error-message').classList.add('hidden');
+        }
+
+        // --- Signup Form Validation ---
+        function validateSignupForm(event) {
+            hideJsError(); // Clear previous errors
+            
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+            // 1. Check for minimum length (8 characters)
+            if (password.length < 8) {
+                showJsError('Password must be at least 8 characters long.');
+                return false; // Prevent form submission
+            }
+
+            // 2. Check for at least one digit
+            const digitRegex = /[0-9]/;
+            if (!digitRegex.test(password)) {
+                showJsError('Password must contain at least one numeric digit.');
+                return false;
+            }
+
+            // 3. Check for at least one special character
+            // Allows: !@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?`~
+            const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?`~]/;
+            if (!specialCharRegex.test(password)) {
+                showJsError('Password must contain at least one special symbol (e.g., !@#$).');
+                return false;
+            }
+            
+            // 4. Check if passwords match
+            if (password !== confirmPassword) {
+                showJsError('The password and confirmation password do not match.');
+                return false;
+            }
+
+            // If all checks pass, allow form submission
+            return true;
+        }
+
+
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-active {
+            border-bottom: 3px solid theme('colors.primary-500');
+            color: theme('colors.primary-500');
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4" onload="showTab('login')">
+
+    <!-- Auth Card Container -->
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl transition-all duration-300">
+
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-extrabold text-gray-900">StoryStream</h1>
+            <p class="text-gray-500 text-sm mt-1">Read, Write, and Publish</p>
+        </div>
+
+        <!-- Tab Controls -->
+        <div class="flex border-b border-gray-200 mb-6">
+            <button id="login-tab" onclick="showTab('login')" class="flex-1 py-3 text-gray-500 hover:text-primary-500 transition duration-150">
+                Log In
+            </button>
+            <button id="signup-tab" onclick="showTab('signup')" class="flex-1 py-3 text-gray-500 hover:text-primary-500 transition duration-150">
+                Sign Up
+            </button>
+        </div>
+
+        <!-- Flash Messages (Server Side) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="space-y-3 mb-6">
+                {% for category, message in messages %}
+                    <div class="p-3 text-sm rounded-lg text-white font-medium 
+                        {% if category == 'error' %}bg-danger{% elif category == 'success' %}bg-success{% else %}bg-primary-500{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- JavaScript Error Message Container -->
+        <div id="js-error-message" class="hidden p-3 mb-4 text-sm rounded-lg text-white font-medium bg-danger"></div>
+
+
+        <!-- -------------------- LOGIN FORM -------------------- -->
+        <div id="login-form" class="hidden">
+            <form method="POST" action="{{ url_for('auth') }}">
+                <input type="hidden" name="action" value="login">
+
+                <div class="mb-5">
+                    <label for="login-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <input
+                        type="email"
+                        id="login-email"
+                        name="email"
+                        required
+                        placeholder="your@email.com"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition duration-150 text-gray-900"
+                    >
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex justify-between items-center">
+                        <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <a href="{{ url_for('forgot_password') }}" class="text-xs font-medium text-primary-500 hover:text-primary-600">Forgot Password?</a>
+                    </div>
+                    
+                    <input
+                        type="password"
+                        id="login-password"
+                        name="password"
+                        required
+                        placeholder="********"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition duration-150 text-gray-900"
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-primary-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-primary-600 transition-all duration-300 shadow-lg shadow-primary-500/30 active:scale-[0.98]"
+                >
+                    Log In
+                </button>
+            </form>
+        </div>
+
+
+        <!-- -------------------- SIGNUP FORM -------------------- -->
+        <div id="signup-form" class="hidden">
+            <!-- Attach JS validation to onsubmit -->
+            <form method="POST" action="{{ url_for('auth') }}" onsubmit="return validateSignupForm(event)">
+                <input type="hidden" name="action" value="signup">
+
+                <div class="mb-5">
+                    <label for="signup-username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <input
+                        type="text"
+                        id="signup-username"
+                        name="username"
+                        required
+                        placeholder="Your unique name"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition duration-150 text-gray-900"
+                    >
+                </div>
+                
+                <div class="mb-5">
+                    <label for="signup-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <input
+                        type="email"
+                        id="signup-email"
+                        name="email"
+                        required
+                        placeholder="your@email.com"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition duration-150 text-gray-900"
+                    >
+                </div>
+
+                <div class="mb-5">
+                    <label for="signup-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input
+                        type="password"
+                        id="signup-password"
+                        name="password"
+                        required
+                        placeholder="********"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition duration-150 text-gray-900"
+                    >
+                    <p id="password-requirements" class="mt-2 text-xs text-gray-500">
+                        Must be **8+ characters**, include a **number**, and a **special symbol** (e.g., `!@#$%`).
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="signup-confirm-password" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="signup-confirm-password"
+                        name="confirm_password"
+                        required
+                        placeholder="Confirm password"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 transition duration-150 text-gray-900"
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-primary-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-primary-600 transition-all duration-300 shadow-lg shadow-primary-500/30 active:scale-[0.98]"
+                >
+                    Sign Up
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</body>
+</html>

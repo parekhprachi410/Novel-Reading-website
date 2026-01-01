@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryStream - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Define necessary URL constants for the external script -->
+    <script>
+        const TOGGLE_URL = "{{ url_for('toggle_dark_mode') }}";
+    </script>
+</head>
+<body class="{% if session.get('dark_mode', False) %}dark-mode{% endif %}">
+
+    <header>
+        <div class="logo">
+            <i class="fas fa-book-open"></i>&nbsp;StoryStream
+        </div>
+        
+        <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <!-- FIX: Changed endpoint from 'list_all_novels' to 'all_books' to match app.py -->
+            <a href="{{ url_for('all_books') }}">All Novels</a>
+            {% if session.get('is_authenticated') %}
+                <a href="{{ url_for('library') }}">Library</a>
+                <a href="{{ url_for('upload_book') }}">Upload Book</a>
+            {% endif %}
+        </nav>
+
+        <div class="header-actions">
+            <form action="{{ url_for('search') }}" method="GET" class="search-form">
+                <input type="search" name="query" placeholder="Title, Author, Genre..." value="{{ request.args.get('query', '') }}">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+
+            <div class="action-group">
+                <!-- Profile Dropdown or Login/Signup Button -->
+                {% if session.get('is_authenticated') %}
+                <div class="dropdown" id="profile-dropdown">
+                    <!-- Dropdown Toggle Button -->
+                    <button class="dropdown-toggle" aria-expanded="false" aria-controls="profile-menu">
+                        <i class="fas fa-user-circle"></i> 
+                        {{ session['username'] | upper }}
+                    </button>
+                    <!-- Dropdown Menu Content -->
+                    <div class="dropdown-menu" id="profile-menu">
+                        <a href="{{ url_for('profile') }}" class="dropdown-item">
+                            <i class="fas fa-address-card"></i> Profile
+                        </a>
+                        <a href="{{ url_for('logout') }}" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{{ url_for('auth') }}" class="btn btn-primary login-signup-btn">
+                    Login/Signup
+                </a>
+                {% endif %}
+
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="btn-toggle theme-toggle-btn" title="Toggle Dark/Light Mode">
+                    <i class="fas fa-sun"></i> 
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Flash Messages Display -->
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        &copy; {{ g.now.year }} StoryStream. All rights reserved.
+    </footer>
+
+    <!-- External Script inclusion -->
+    <!-- The external script will handle the profile dropdown and dark mode toggle functionality -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

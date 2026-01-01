@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}All Novels{% endblock %}
+
+{% block content %}
+
+<!-- Main content container, styled for better layout -->
+
+<div class="container mx-auto p-4 md:p-8">
+
+<!-- Title and Search Info -->
+<div class="mb-8">
+    {% if query %}
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100 section-title">Search Results for "{{ query }}"</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">Found {{ books|length }} novel(s).</p>
+    {% else %}
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100 section-title">All Novels</h1>
+    {% endif %}
+</div>
+
+<!-- Book Grid -->
+<!-- The grid class ensures proper responsive layout -->
+<div class="book-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+    {% if books %}
+        {% for book in books %}
+            <!-- Novel Card -->
+            <div class="novel-card bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out border border-gray-200 dark:border-gray-700 flex flex-col">
+                
+                <!-- Cover Image -->
+                <!-- Used 'aspect-w-3 aspect-h-4' for consistent aspect ratio on covers -->
+                <div class="aspect-w-3 aspect-h-4 w-full overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+                    <img src="{{ book.cover_url }}" 
+                         alt="Cover of {{ book.title }}" 
+                         class="object-cover w-full h-full"
+                         onerror="this.onerror=null;this.src='https://placehold.co/250x333/8d99ae/ffffff?text=No+Cover+Available'">
+                </div>
+
+                <!-- Novel Info -->
+                <!-- flex-grow allows this section to fill remaining vertical space -->
+                <div class="p-4 flex flex-col flex-grow">
+                    <div class="flex-grow">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 truncate mb-1" title="{{ book.title }}">{{ book.title }}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">By <span class="font-medium">{{ book.author }}</span></p>
+                        
+                        <!-- Genre Link/Tag -->
+                        <a href="{{ url_for('genre_view', genre_name=book.genre) }}" class="text-xs font-semibold inline-block py-1 px-3 mt-2 rounded-full text-blue-800 bg-blue-100 dark:text-blue-200 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800 transition duration-150">
+                            {{ book.genre }}
+                        </a>
+                        
+                        <p class="mt-3 text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
+                            {{ book.description[:100] }}{% if book.description|length > 100 %}...{% endif %}
+                        </p>
+                    </div>
+                    
+                    <!-- Action Button (Read Novel) -->
+                    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                        <a href="{{ url_for('reader', book_id=book.id) }}" 
+                           class="w-full text-center inline-block py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200 dark:focus:ring-offset-gray-800">
+                            Read Novel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <!-- No results message -->
+        <div class="col-span-full text-center py-10 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <p class="text-xl font-semibold text-gray-700 dark:text-gray-300">
+                No novels found that match your search.
+            </p>
+            <p class="text-md text-gray-500 dark:text-gray-400 mt-2">Try a different query or browse all genres.</p>
+        </div>
+    {% endif %}
+</div>
+
+</div>
+
+{% endblock %}

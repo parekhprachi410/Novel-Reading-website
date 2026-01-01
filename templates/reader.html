@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Reading Novel{% endblock %}
+
+{% block content %}
+<div class="reader-container max-w-4xl mx-auto p-4 sm:p-8">
+    
+    <!-- Navigation: Simple Back Button at the top for easy exit -->
+    <!-- FIX: Changed 'all_novels' to 'all_books' as suggested by the traceback error. -->
+    <a href="{{ url_for('all_books') }}" class="inline-flex items-center text-accent-blue hover:opacity-80 font-medium mb-12 mt-4 transition" style="color: var(--secondary-color);">
+        <i class="fas fa-chevron-left mr-2"></i>
+        Back to All Novels
+    </a>
+
+    <!-- Reading Content Section (Sole Focus) -->
+    <!-- This main element is now the center of the page, without any title/author context -->
+    <main class="novel-content">
+        {% if book.content %}
+            <div class="content-text">
+                <!-- This loop converts newline characters (\n) into separate paragraphs (<p>) -->
+                {% for paragraph in book.content.split('\n') %}
+                    {% if paragraph.strip() %}
+                        <p>{{ paragraph | safe }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-text-color-secondary">Novel content is currently unavailable.</p>
+        {% endif %}
+    </main>
+</div>
+
+<style>
+    /* READER SPECIFIC STYLES - Focused on readability */
+    :root {
+        /* Reading specific variables - Retained for optimal typography */
+        --reading-max-width: 800px;
+        --font-family-serif: 'Times New Roman', serif;
+        --font-size-body: 1.15rem;
+        --line-height-body: 1.8;
+        --paragraph-spacing: 1.5rem;
+    }
+
+    .reader-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 30px 20px;
+        min-height: 80vh;
+        /* Uses the body's background-color, which handles light/dark mode transitions */
+    }
+
+    /* --- Content Styling (The Reading Area) --- */
+    .novel-content {
+        width: 100%;
+        max-width: var(--reading-max-width);
+        margin: 0 auto; /* Center the reading block */
+        font-family: var(--font-family-serif);
+        font-size: var(--font-size-body);
+        line-height: var(--line-height-body);
+        text-align: justify;
+        hyphens: auto;
+        /* Uses the global --text-color from base/style.css which respects dark mode */
+        color: var(--text-color); 
+    }
+
+    .novel-content p {
+        margin-bottom: var(--paragraph-spacing);
+        text-indent: 1.5em; /* Standard novel indenting */
+    }
+    
+    .novel-content p:first-child {
+        text-indent: 0; /* No indent on the first paragraph */
+    }
+
+    /* Media Query for smaller screens */
+    @media (max-width: 768px) {
+        .novel-content {
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+    }
+</style>
+{% endblock %}

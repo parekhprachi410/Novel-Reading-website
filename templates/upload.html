@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Novel{% endblock %}
+
+{% block content %}
+    <div class="form-wrapper">
+        <div class="form-container upload-card">
+            <h2 class="form-title">Publish Your Novel</h2>
+            <p class="subtitle">Anyone can share their story! Uploads by guests are attributed to "Guest Uploader".</p>
+
+            <form method="POST" action="{{ url_for('upload_book') }}" enctype="multipart/form-data" class="upload-form">
+                
+                <div class="form-group">
+                    <label for="title">Novel Title</label>
+                    <input type="text" id="title" name="title" required placeholder="e.g., The Silent City">
+                </div>
+
+                <div class="form-group">
+                    <label for="author">Author / Pseudonym</label>
+                    <input 
+                        type="text" 
+                        id="author" 
+                        name="author" 
+                        value="{{ current_user.username if current_user.is_authenticated else '' }}" 
+                        required 
+                        placeholder="Your name or chosen pseudonym"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="genre">Genre</label>
+                    <select id="genre" name="genre" required>
+                        <option value="" disabled selected>Select a Genre</option>
+                        <option value="Fantasy">Fantasy</option>
+                        <option value="Sci-Fi">Sci-Fi</option>
+                        <option value="Thriller">Thriller</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Historical">Historical</option>
+                        <option value="Literary">Literary</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Synopsis / Description</label>
+                    <textarea id="description" name="description" rows="5" required placeholder="Give a compelling summary of your novel (max 500 characters)."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">Novel Content (Full Text)</label>
+                    <textarea id="content" name="content" rows="15" required placeholder="Paste the full text of your novel here."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cover_image" class="file-label">Cover Image (JPG/PNG File, Optional)</label>
+                    <input type="file" id="cover_image" name="cover_image" accept="image/png, image/jpeg">
+                    <p class="input-hint">An attractive cover increases readership!</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary submit-btn">
+                    <i class="fas fa-upload"></i> Publish Novel
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <style>
+        /* UPLOAD SPECIFIC STYLES */
+        :root {
+            /* Assuming these variables are defined in base.css or elsewhere */
+            --primary-color: #007bff; /* Example: A blue */
+            --primary-color-light: rgba(0, 123, 255, 0.3); /* Lighter for focus */
+            --text-color-primary: #333; /* Dark gray for main text */
+            --text-color-secondary: #6c757d; /* Medium gray for secondary text */
+            --card-bg-color: #ffffff; /* White card background */
+            --border-color: #dee2e6; /* Light gray border */
+            --input-bg-color: #f8f9fa; /* Very light gray input background */
+            --bg-color-hover: #e9ecef; /* Slightly darker light gray for hover/file input */
+            --success-color: #28a745; /* Green for success button */
+            --success-color-dark: #218838; /* Darker green for success button hover */
+            --shadow-medium: 0 5px 15px rgba(0,0,0,0.1); /* Medium shadow */
+            
+            /* New or adjusted variables for improved contrast */
+            --label-color: #212529; /* Darker for labels */
+            --input-text-color: #495057; /* Darker text for inputs */
+            --placeholder-color: #888; /* Darker placeholder */
+            --input-border-focus: #0056b3; /* Darker blue for focus border */
+            --dark-mode-bg: #1a1a1a; /* Example dark mode background */
+            --dark-mode-card-bg: #2b2b2b; /* Example dark mode card background */
+            --dark-mode-text-primary: #f8f9fa; /* Example dark mode primary text */
+            --dark-mode-text-secondary: #adb5bd; /* Example dark mode secondary text */
+            --dark-mode-input-bg: #3c3c3c; /* Example dark mode input background */
+            --dark-mode-border-color: #495057; /* Example dark mode border */
+        }
+
+        /* Dark mode overrides (assuming a .dark-mode class on body or html) */
+        body.dark-mode {
+            --text-color-primary: var(--dark-mode-text-primary);
+            --text-color-secondary: var(--dark-mode-text-secondary);
+            --card-bg-color: var(--dark-mode-card-bg);
+            --border-color: var(--dark-mode-border-color);
+            --input-bg-color: var(--dark-mode-input-bg);
+            --bg-color-hover: #444; /* Darker hover for dark mode */
+            --label-color: var(--dark-mode-text-primary); /* Labels bright in dark mode */
+            --input-text-color: var(--dark-mode-text-primary); /* Input text bright in dark mode */
+            --placeholder-color: #b0b0b0; /* Lighter placeholder for dark mode */
+            --input-border-focus: var(--primary-color); /* Primary color for focus in dark mode */
+        }
+
+        .form-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .upload-card {
+            width: 100%;
+            max-width: 600px;
+            margin: 30px 0;
+            padding: 40px;
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .form-title {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-color-secondary); /* This should have decent contrast with card-bg-color */
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700; /* Made bolder for contrast */
+            color: var(--label-color); /* Specific color for labels */
+        }
+
+        .form-group input[type="text"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color); /* Ensure border is visible */
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: var(--input-bg-color);
+            color: var(--input-text-color); /* Specific color for input text */
+            transition: border-color 0.3s;
+        }
+        
+        /* Placeholder styling for better contrast */
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--placeholder-color); 
+            opacity: 1; /* Firefox default opacity is lower */
+        }
+        .form-group select:invalid { /* Style for default "Select a Genre" option */
+            color: var(--placeholder-color);
+        }
+        .form-group select option {
+            color: var(--input-text-color); /* Ensure options are readable */
+            background-color: var(--input-bg-color); /* Ensure option background is consistent */
+        }
+        .form-group select option:disabled {
+            color: var(--placeholder-color);
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--input-border-focus); /* Darker, more visible focus border */
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-color-light); /* Slightly thicker, more prominent shadow */
+        }
+
+        /* Styling for the file input */
+        input[type="file"] {
+            padding: 10px;
+            border: 1px dashed var(--dark-mode-border-color); /* Use a more prominent dashed border */
+            background-color: var(--bg-color-hover);
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            color: var(--input-text-color); /* Ensure file input text is readable */
+        }
+        
+        .file-label {
+            margin-bottom: 5px !important;
+        }
+        
+        .input-hint {
+            font-size: 0.8rem;
+            color: var(--text-color-secondary); /* Secondary text color, ensure it contrasts well */
+            margin-top: 5px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: var(--success-color); 
+            color: white; /* White text on green, good contrast */
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--success-color-dark);
+            transform: translateY(-1px);
+        }
+        
+        .submit-btn i {
+            margin-right: 8px;
+        }
+        
+        /* Make select element look consistent */
+        .form-group select {
+            appearance: none; 
+            /* Updated fill color for SVG to ensure contrast in both modes */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23495057'%3E%3Cpath d='M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06L10 13.06 5.23 8.27a.75.75 0 01.02-1.06z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 1.2em;
+        }
+
+        /* Dark mode specific adjustments for the select arrow */
+        body.dark-mode .form-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23f8f9fa'%3E%3Cpath d='M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06L10 13.06 5.23 8.27a.75.75 0 01.02-1.06z'/%3E%3C/svg%3E");
+        }
+    </style>
+{% endblock %}

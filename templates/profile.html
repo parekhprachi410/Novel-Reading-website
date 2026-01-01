@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+    <!-- 
+        The 'user' object is passed from the Flask route (app.py) as current_user, 
+        and is guaranteed to exist because the route is protected by @login_required. 
+    -->
+    <div class="form-wrapper">
+        <div class="form-container profile-card">
+            <h2 class="form-title">Your Profile</h2>
+            
+            <div class="user-id-display">
+                <i class="fas fa-id-badge icon-primary"></i>
+                <span class="label">User ID:</span>
+                <code class="user-id-code">{{ user.id }}</code>
+            </div>
+
+            <form method="POST" action="{{ url_for('profile') }}" class="profile-form">
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ user.username }}" required 
+                           placeholder="Enter your new username">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-with-icon">
+                        <input type="email" id="email" name="email" value="{{ user.email }}" readonly 
+                               title="Email cannot be changed after registration">
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                    <p class="input-hint">Email is fixed for security reasons.</p>
+                </div>
+                
+                <button type="submit" class="btn btn-primary update-btn">
+                    <i class="fas fa-save"></i> Update Profile
+                </button>
+            </form>
+
+            <div class="separator-line"></div>
+
+            <div class="logout-section">
+                <a href="{{ url_for('logout') }}" class="btn btn-danger logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        /* PROFILE SPECIFIC STYLES */
+        .form-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .profile-card {
+            width: 100%;
+            max-width: 500px;
+            margin: 30px 0;
+            padding: 40px;
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-medium);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .form-title {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .user-id-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--text-color-secondary);
+            margin-bottom: 30px;
+            padding: 10px;
+            background: var(--bg-color-hover);
+            border-radius: 8px;
+        }
+        
+        .user-id-display .label {
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .user-id-display .icon-primary {
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .user-id-code {
+            background: var(--bg-color);
+            color: var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-family: monospace;
+            user-select: all; /* Allows easy copying */
+        }
+
+        .profile-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color-primary);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-sizing: border-box;
+            background-color: var(--input-bg-color);
+            color: var(--text-color-primary);
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-color-secondary);
+        }
+
+        .form-group input[readonly] {
+            background-color: var(--bg-color); 
+            cursor: not-allowed;
+            opacity: 0.8;
+            padding-right: 40px; /* Space for the lock icon */
+        }
+        
+        .input-hint {
+            font-size: 0.8rem;
+            color: var(--text-color-secondary);
+            margin-top: 5px;
+        }
+
+        .update-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        .separator-line {
+            margin: 30px 0;
+            border-top: 1px solid var(--border-color); 
+        }
+        
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #e74c3c; /* Red color for warning/logout */
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+{% endblock %}

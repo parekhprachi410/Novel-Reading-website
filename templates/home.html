@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Home - StoryStream{% endblock %}
+
+{% block content %}
+
+    <h1 class="section-title">Welcome to StoryStream</h1>
+    <p style="margin-bottom: 40px; font-size: 1.1rem;">Your personal library for the next great adventure. Start reading now!</p>
+
+    <h2 class="section-title">What's New</h2>
+    <div class="whats-new-grid">
+        {% if books %}
+            {% for book in books %}
+                <div class="whats-new-card">
+                    <div>
+                        <h4>{{ book.title }}</h4>
+                        <p>By {{ book.author }}</p>
+                        <span class="genre" style="background-color: white; color: var(--primary-color);">{{ book.genre }}</span>
+                    </div>
+                    <a href="{{ url_for('all_books') }}" style="align-self: flex-end;">Read Sample &rarr;</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="grid-column: 1 / -1;">No novels have been uploaded yet!</p>
+        {% endif %}
+    </div>
+
+    <h2 class="section-title" style="margin-top: 50px;">Explore Top Genres</h2>
+    <!-- Placeholder for Genre Cards -->
+    <div class="book-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+        <div class="novel-card" style="background-color: #f1c40f; color: #333;">
+            <div class="novel-info" style="text-align: center;">
+                <h3 style="color: #333;">Fantasy</h3>
+                <p>Epic worlds and ancient magic.</p>
+            </div>
+        </div>
+        <div class="novel-card" style="background-color: #3498db; color: #fff;">
+            <div class="novel-info" style="text-align: center;">
+                <h3 style="color: #fff;">Sci-Fi</h3>
+                <p>Future tech and space exploration.</p>
+            </div>
+        </div>
+        <div class="novel-card" style="background-color: #e74c3c; color: #fff;">
+            <div class="novel-info" style="text-align: center;">
+                <h3 style="color: #fff;">Thriller</h3>
+                <p>Heart-pounding suspense.</p>
+            </div>
+        </div>
+        <div class="novel-card" style="background-color: #2ecc71; color: #fff;">
+            <div class="novel-info" style="text-align: center;">
+                <h3 style="color: #fff;">Romance</h3>
+                <p>Stories of love and connection.</p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
