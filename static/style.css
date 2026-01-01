@@ -1,0 +1,777 @@
+/* --- Global Styles & Variables --- */
+
+:root {
+    --bg-light: #f4f7f9;
+    --bg-card-light: #ffffff;
+    --text-light: #2c3e50;
+    --primary-color: #e67e22;
+    /* Carrot Orange */
+    --accent-color: #3498db;
+    /* Blue */
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Dark Mode Defaults (will be overwritten) */
+    --bg-dark: #2c3e50;
+    --bg-card-dark: #34495e;
+    --text-dark: #ecf0f1;
+    /* New: Reader Mode specific colors */
+    --reader-bg-light: #fefcfb;
+    /* Softer white/cream */
+    --reader-text-light: #1f1f1f;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-light);
+    transition: background-color 0.3s, color 0.3s;
+    margin: 0;
+    padding-top: 60px;
+    /* Space for fixed header */
+}
+
+
+/* --- Dark Mode Toggle --- */
+
+body.dark-mode {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+    --reader-bg-dark: #1e1e1e;
+    /* Darker background for reader mode dark */
+    --reader-text-dark: #cccccc;
+}
+
+.dark-mode header,
+.dark-mode footer,
+.dark-mode .card,
+.dark-mode .form-container,
+.dark-mode .novel-card {
+    background-color: var(--bg-card-dark);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.dark-mode input,
+.dark-mode textarea {
+    background-color: #44586f;
+    border-color: #55708a;
+    color: var(--text-dark);
+}
+
+.dark-mode a:not(.btn):hover {
+    color: var(--primary-color);
+}
+
+.dark-mode .novel-card h3 {
+    color: var(--text-dark);
+}
+
+
+/* --- Reader Mode Styles (ADDED) --- */
+
+
+/* Completely remove padding and fix positioning for immersive reading */
+
+body.reader-mode {
+    padding-top: 0;
+    background-color: var(--reader-bg-light);
+    color: var(--reader-text-light);
+}
+
+body.dark-mode.reader-mode {
+    background-color: var(--reader-bg-dark);
+    color: var(--reader-text-dark);
+}
+
+
+/* Ensure main content is optimized for reading in reader mode */
+
+body.reader-mode main {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+
+/* --- Header Section --- */
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-card-light);
+    box-shadow: var(--shadow);
+    padding: 10px 20px;
+    display: flex;
+    /* MAIN FLEX CONTAINER */
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    flex-wrap: nowrap;
+    /* Prevent unnecessary wrapping on desktop */
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    flex-grow: 0;
+    /* Nav should take minimum space */
+    margin: 0 20px;
+}
+
+nav a {
+    margin: 0 10px;
+    color: var(--text-light);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+    white-space: nowrap;
+}
+
+nav a:hover {
+    color: var(--primary-color);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* Space between search and action group */
+    flex-shrink: 0;
+    /* Actions should not shrink */
+    /* Ensure the header-actions group stays within the header boundaries */
+    min-width: 0;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    /* Search bar can grow to fill space */
+    max-width: 300px;
+    min-width: 150px;
+}
+
+.search-form input[type="text"],
+.search-form input[type="search"] {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+.search-form button {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+
+.search-form button:hover {
+    background-color: #2980b9;
+}
+
+
+/* --- Action Group (Profile/Auth and Theme Toggle) --- */
+
+.action-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Space between the dropdown/auth button and the theme toggle */
+    flex-shrink: 0;
+    /* FIX: Added margin-right to pull it away from the edge slightly, and ensure no overflow */
+    margin-right: -10px;
+    padding-right: 10px;
+}
+
+
+/* --- Buttons and Form Elements --- */
+
+.btn {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background-color: #d35400;
+}
+
+.btn-secondary {
+    background-color: #bdc3c7;
+    color: var(--text-light);
+}
+
+.btn-secondary:hover {
+    background-color: #95a5a6;
+}
+
+.btn-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.btn-toggle svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--text-light);
+    transition: fill 0.2s;
+}
+
+.dark-mode .btn-toggle svg {
+    fill: var(--text-dark);
+}
+
+
+/* --- Dropdown Menu (Merged Profile/Logout) --- */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    white-space: nowrap;
+}
+
+.dropdown-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: #d35400;
+    /* Darker primary color */
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--bg-card-light);
+    min-width: 160px;
+    box-shadow: var(--shadow);
+    z-index: 10;
+    border-radius: 8px;
+    overflow: hidden;
+    display: none;
+    margin-top: 5px;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-item {
+    color: var(--text-light);
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.2s;
+}
+
+.dropdown-item i {
+    margin-right: 8px;
+    width: 15px;
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-light);
+}
+
+.dark-mode .dropdown-menu {
+    background-color: var(--bg-card-dark);
+}
+
+.dark-mode .dropdown-item {
+    color: var(--text-dark);
+}
+
+.dark-mode .dropdown-item:hover {
+    background-color: #44586f;
+}
+
+
+/* --- Theme Toggle Button --- */
+
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 1.4rem;
+    color: var(--text-light);
+    transition: color 0.2s, transform 0.2s;
+    /* Ensure it has a fixed size and is vertically aligned */
+    height: 38px;
+    line-height: 28px;
+    flex-shrink: 0;
+    /* FIX: Added margin-right to ensure it is not pushed off the edge */
+    margin-right: 10px;
+}
+
+.theme-toggle-btn:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.dark-mode .theme-toggle-btn {
+    color: var(--text-dark);
+}
+
+.dark-mode .theme-toggle-btn:hover {
+    color: var(--primary-color);
+}
+
+
+/* --- Main Content Layout --- */
+
+main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+
+/* --- Novel Details Layout (FIX FOR OVERLAP) --- */
+
+.novel-details {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--bg-card-light);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.dark-mode .novel-details {
+    background-color: var(--bg-card-dark);
+}
+
+.novel-header-area {
+    display: flex;
+    gap: 30px;
+    /* Space between cover and text */
+    margin-bottom: 30px;
+    align-items: flex-start;
+}
+
+.cover-image-container {
+    flex-shrink: 0;
+    /* Prevent the image from shrinking */
+    width: 200px;
+    /* Fixed width for the cover */
+    height: 300px;
+    /* Fixed height for the cover */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.cover-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures image covers the area without distortion */
+    display: block;
+}
+
+.info-block {
+    flex-grow: 1;
+    /* Allows text block to take up remaining space */
+    padding-top: 5px;
+}
+
+.info-block h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+.info-block p {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #7f8c8d;
+    /* Muted color for metadata */
+}
+
+.info-block .author-genre {
+    font-style: italic;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.synopsis {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.dark-mode .synopsis {
+    border-top-color: #44586f;
+}
+
+.synopsis h2 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.synopsis-text {
+    white-space: pre-wrap;
+    line-height: 1.7;
+}
+
+.read-button-container {
+    margin-top: 30px;
+}
+
+.read-button-container .btn {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: inline-block;
+}
+
+.read-button-container .btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+
+/* --- Grid View of Books --- */
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.novel-card {
+    background-color: var(--bg-card-light);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    /* Ensure the novel card is a link target */
+    text-decoration: none;
+    color: inherit;
+}
+
+.novel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.novel-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+}
+
+.novel-info {
+    padding: 15px;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.novel-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-light);
+    margin-top: 0;
+    margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.novel-card p {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin: 0;
+}
+
+.novel-card .genre {
+    display: inline-block;
+    font-size: 0.75rem;
+    background-color: var(--accent-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    margin-top: 8px;
+}
+
+
+/* --- Form Container (Auth/Upload/Profile) --- */
+
+.form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: var(--bg-card-light);
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+}
+
+.form-container h2 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+
+/* --- Flash Messages --- */
+
+.flash-messages {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 1001;
+}
+
+.flash {
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    min-width: 250px;
+}
+
+.flash.success {
+    background-color: #27ae60;
+    color: white;
+}
+
+.flash.error {
+    background-color: #e74c3c;
+    color: white;
+}
+
+
+/* --- Footer Section --- */
+
+footer {
+    background-color: var(--bg-card-light);
+    color: #7f8c8d;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode footer {
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+
+/* --- What's New Section (On Home Page) --- */
+
+.whats-new-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.whats-new-card {
+    background: linear-gradient(135deg, var(--primary-color), #f39c12);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 150px;
+}
+
+.whats-new-card h4 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.whats-new-card p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.whats-new-card a {
+    color: white;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.whats-new-card a:hover {
+    color: #f1c40f;
+}
+
+
+/* --- Mobile Responsiveness --- */
+
+@media (max-width: 768px) {
+    header {
+        /* Allow header content to wrap */
+        flex-wrap: wrap;
+        align-items: flex-start;
+        padding-bottom: 10px;
+    }
+    .logo {
+        width: 100%;
+        /* Force logo to its own line */
+        margin-bottom: 10px;
+        justify-content: center;
+    }
+    nav {
+        /* Nav links take up the remaining space on the second line */
+        width: 100%;
+        margin: 0;
+        justify-content: space-around;
+        /* Spread the links out */
+        order: 2;
+        /* Put navigation links after the action group */
+        padding: 5px 0 0 0;
+        border-top: 1px solid #ccc5c530;
+    }
+    nav a {
+        margin: 0 5px;
+        font-size: 0.9rem;
+    }
+    .header-actions {
+        width: 100%;
+        margin-top: 0;
+        /* Actions take up the full width below the logo, above the nav links */
+        justify-content: space-between;
+        order: 1;
+    }
+    .search-form {
+        flex-grow: 1;
+        max-width: 70%;
+        /* Allow search to take up most of the space */
+        min-width: 50px;
+        margin-right: 10px;
+    }
+    .action-group {
+        flex-shrink: 0;
+        gap: 8px;
+        /* Revert margin adjustments for mobile to let flex handle it */
+        margin-right: 0;
+        padding-right: 0;
+    }
+    .dropdown-toggle,
+    .login-signup-btn {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+    .search-form input[type="text"] {
+        padding: 8px 5px;
+    }
+    /* Ensure the theme toggle is properly spaced on mobile */
+    .theme-toggle-btn {
+        margin-right: 0;
+    }
+    /* Novel Details Responsive Layout */
+    .novel-details {
+        margin: 20px 10px;
+        padding: 15px;
+    }
+    .novel-header-area {
+        flex-direction: column;
+        /* Stack cover and info vertically on mobile */
+        align-items: center;
+        gap: 20px;
+    }
+    .cover-image-container {
+        width: 150px;
+        height: 225px;
+    }
+    .info-block {
+        text-align: center;
+        /* Center text details below the cover */
+    }
+    .read-button-container {
+        text-align: center;
+        /* Center the read button on mobile */
+    }
+}
